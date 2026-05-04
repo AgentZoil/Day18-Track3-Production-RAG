@@ -24,16 +24,13 @@ class CrossEncoderReranker:
 
     def _load_model(self):
         if CrossEncoderReranker._shared_model is None:
-            from FlagEmbedding import FlagReranker
-
-            CrossEncoderReranker._shared_model = FlagReranker(
-                self.model_name,
-                use_fp16=True
-            )
-
-            # warmup
-            CrossEncoderReranker._shared_model.compute_score([("test", "test")])
-
+            try:
+                from FlagEmbedding import FlagReranker
+                CrossEncoderReranker._shared_model = FlagReranker(self.model_name, use_fp16=True)
+                CrossEncoderReranker._shared_model.compute_score([("test", "test")])
+            except Exception:
+                from sentence_transformers import CrossEncoder
+                CrossEncoderReranker._shared_model = CrossEncoder(self.model_name)
         return CrossEncoderReranker._shared_model
     def rerank(self, query: str, documents: list[dict], top_k: int = RERANK_TOP_K) -> list[RerankResult]:
         """Rerank documents: top-20 → top-k."""
@@ -55,7 +52,10 @@ class CrossEncoderReranker:
         pairs = [(query, doc["text"]) for doc in documents]
 
         # 2. Compute rerank scores
-        scores = model.compute_score(pairs)
+        if hasattr(model, "compute_score"):
+            scores = model.compute_score(pairs)
+        else:
+            scores = model.predict(pairs).tolist()
 
         # 3. Combine
         scored_docs = []

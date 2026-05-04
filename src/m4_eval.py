@@ -4,11 +4,6 @@ import os, sys, json
 from dataclasses import dataclass
 import pandas as pd
 
-# RAGAS & Datasets imports
-from ragas import evaluate
-from ragas.metrics import faithfulness, answer_relevancy, context_precision, context_recall
-from datasets import Dataset
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import TEST_SET_PATH
 
@@ -34,6 +29,14 @@ def load_test_set(path: str = TEST_SET_PATH) -> list[dict]:
 def evaluate_ragas(questions: list[str], answers: list[str],
                    contexts: list[list[str]], ground_truths: list[str]) -> dict:
     """Run RAGAS evaluation."""
+    try:
+        from ragas import evaluate
+        from ragas.metrics import faithfulness, answer_relevancy, context_precision, context_recall
+        from datasets import Dataset
+    except ImportError:
+        return {"faithfulness": 0.0, "answer_relevancy": 0.0,
+                "context_precision": 0.0, "context_recall": 0.0, "per_question": []}
+
     # 1. Create dataset
     dataset = Dataset.from_dict({
         "question": questions,

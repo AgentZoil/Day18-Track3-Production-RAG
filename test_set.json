@@ -1,3 +1,42 @@
 [
-  {"question": "hihi cả nhà tự tạo testset bằng cơm nhé", "ground_truth": "Không kịp tạo luôn"},
+  {
+    "question": "Công ty CP DHA Surfaces có mã số thuế là bao nhiêu?",
+    "ground_truth": "Mã số thuế của Công ty CP DHA Surfaces là 0106769437."
+  },
+  {
+    "question": "Thuế GTGT phải nộp trong kỳ của DHA Surfaces là bao nhiêu?",
+    "ground_truth": "Thuế GTGT phải nộp trong kỳ (ô 40a) của Công ty CP DHA Surfaces là 52,133,830 đồng."
+  },
+  {
+    "question": "Doanh thu bán hàng chịu thuế suất 10% của DHA Surfaces trong Quý 4 năm 2024 là bao nhiêu?",
+    "ground_truth": "Doanh thu bán hàng chịu thuế suất 10% của DHA Surfaces trong Quý 4 năm 2024 là 3,703,688,610 đồng."
+  },
+  {
+    "question": "Thuế GTGT đầu vào được khấu trừ trong kỳ của DHA Surfaces là bao nhiêu?",
+    "ground_truth": "Thuế GTGT đầu vào được khấu trừ kỳ này (ô 25) của DHA Surfaces là 215,163,767 đồng."
+  },
+  {
+    "question": "Thuế GTGT còn được khấu trừ chuyển từ kỳ trước sang của DHA Surfaces là bao nhiêu?",
+    "ground_truth": "Thuế GTGT còn được khấu trừ chuyển từ kỳ trước (ô 22) là 77,377,803 đồng."
+  },
+  {
+    "question": "Nghị định 13/2023/NĐ-CP được ban hành vào ngày nào?",
+    "ground_truth": "Nghị định 13/2023/NĐ-CP được ban hành ngày 17 tháng 4 năm 2023 bởi Chính phủ."
+  },
+  {
+    "question": "Dữ liệu cá nhân nhạy cảm theo Nghị định 13/2023 bao gồm những loại nào?",
+    "ground_truth": "Dữ liệu cá nhân nhạy cảm bao gồm: quan điểm chính trị, tôn giáo; tình trạng sức khỏe trong hồ sơ bệnh án; nguồn gốc chủng tộc, dân tộc; đặc điểm di truyền; thuộc tính vật lý, sinh học; đời sống tình dục; dữ liệu tội phạm; thông tin khách hàng ngân hàng; dữ liệu vị trí định vị."
+  },
+  {
+    "question": "Bên Kiểm soát dữ liệu cá nhân là gì theo Nghị định 13/2023?",
+    "ground_truth": "Bên Kiểm soát dữ liệu cá nhân là tổ chức, cá nhân quyết định mục đích và phương tiện xử lý dữ liệu cá nhân."
+  },
+  {
+    "question": "Nghị định 13/2023 áp dụng cho những đối tượng nào?",
+    "ground_truth": "Nghị định áp dụng cho cơ quan, tổ chức, cá nhân Việt Nam; cơ quan, tổ chức, cá nhân nước ngoài tại Việt Nam; cơ quan, tổ chức, cá nhân Việt Nam hoạt động tại nước ngoài; và cơ quan, tổ chức, cá nhân nước ngoài có liên quan đến xử lý dữ liệu cá nhân tại Việt Nam."
+  },
+  {
+    "question": "Xử lý dữ liệu cá nhân được định nghĩa như thế nào trong Nghị định 13/2023?",
+    "ground_truth": "Xử lý dữ liệu cá nhân là một hoặc nhiều hoạt động tác động tới dữ liệu cá nhân như thu thập, ghi, phân tích, lưu trữ, chỉnh sửa, công khai, truy cập, mã hóa, sao chép, chia sẻ, truyền đưa, xóa, hủy dữ liệu cá nhân hoặc các hành động khác có liên quan."
+  }
 ]

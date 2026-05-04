@@ -23,11 +23,21 @@ class Chunk:
 
 
 def load_documents(data_dir: str = DATA_DIR) -> list[dict]:
-    """Load all markdown/text files from data/. (Đã implement sẵn)"""
+    """Load markdown và PDF files từ data/."""
     docs = []
     for fp in sorted(glob.glob(os.path.join(data_dir, "*.md"))):
         with open(fp, encoding="utf-8") as f:
             docs.append({"text": f.read(), "metadata": {"source": os.path.basename(fp)}})
+    for fp in sorted(glob.glob(os.path.join(data_dir, "*.pdf"))):
+        import pdfplumber
+        text = ""
+        with pdfplumber.open(fp) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n\n"
+        if text.strip():
+            docs.append({"text": text.strip(), "metadata": {"source": os.path.basename(fp)}})
     return docs
 
 
