@@ -1,0 +1,4 @@
+FlagEmbedding==1.2.10
+torch>=2.0.0
+numpy>=1.24.0
+flashrank>=0.2.0
