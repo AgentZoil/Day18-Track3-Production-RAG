@@ -6,40 +6,41 @@
 
 ## Hướng dẫn
 
-1. Nhóm 4 người → mỗi người chọn **1 module khác nhau**
-2. Nhóm 3 người → người mạnh nhất làm M4 kèm M1 hoặc M3
+1. Nhóm 4–5 người → mỗi người chọn **1 module khác nhau**
+2. Nhóm 3 người → 1 người làm M5 kèm M1 hoặc M4
 3. Làm 1 mình → chọn M1 hoặc M2 (core nhất)
 4. Mở file `src/m*_<tên>.py` → tìm `# TODO:` → implement
 5. Chạy `pytest tests/test_m*.py` để kiểm tra
 
 ---
 
-## Module 1: Chunking Strategies
+## Module 1: Advanced Chunking Strategies
 
 **File:** `src/m1_chunking.py` · **Test:** `pytest tests/test_m1.py`
 
 ### Yêu cầu
-Implement 3 chunking strategies và so sánh A/B:
+Implement 3 advanced chunking strategies và so sánh A/B với basic baseline:
 
 | Strategy | Hàm | Mô tả |
 |----------|-----|-------|
-| Fixed-size | `chunk_fixed_size()` | Cắt theo số ký tự, có overlap |
-| Semantic | `chunk_semantic()` | Nhóm câu theo cosine similarity |
+| Baseline (có sẵn) | `chunk_basic()` | Split theo paragraph — đã implement, dùng để so sánh |
+| Semantic | `chunk_semantic()` | Nhóm câu theo cosine similarity — không cắt giữa ý |
 | Hierarchical | `chunk_hierarchical()` | Parent (2048) + Child (256), retrieve child → return parent |
+| Structure-Aware | `chunk_structure_aware()` | Parse markdown headers → chunk theo section logic |
 
 ### TODO trong code
 ```python
-# TODO 1: chunk_fixed_size() — slide window, step = chunk_size - overlap
-# TODO 2: chunk_semantic() — encode sentences, split khi similarity < threshold
-# TODO 3: chunk_hierarchical() — parent chunks → split thành children, gán parent_id
-# TODO 4: compare_strategies() — chạy cả 3, in bảng so sánh
+# TODO 1: chunk_semantic() — encode sentences, split khi similarity < threshold
+# TODO 2: chunk_hierarchical() — parent chunks → split thành children, gán parent_id
+# TODO 3: chunk_structure_aware() — regex split markdown headers, pair header + content
+# TODO 4: compare_strategies() — chạy cả 4, in bảng so sánh
 ```
 
 ### Test pass criteria
-- [ ] 3 strategies đều trả về `list[Chunk]` không rỗng
-- [ ] Fixed-size: mỗi chunk ≤ chunk_size + 20 chars
-- [ ] Hierarchical: mỗi child có `parent_id` hợp lệ
-- [ ] `compare_strategies()` trả về stats cho cả 3
+- [ ] Semantic: trả về `list[Chunk]` không rỗng, nhóm theo topic
+- [ ] Hierarchical: mỗi child có `parent_id` hợp lệ, children nhỏ hơn parents
+- [ ] Structure-Aware: giữ nguyên headers, có `section` trong metadata
+- [ ] `compare_strategies()` trả về stats cho cả 4 strategies
 
 ---
 
@@ -146,3 +147,42 @@ RAGAS evaluation pipeline + failure analysis:
 | Code quality: comments, type hints, clean | 10 |
 | Tất cả TODO markers hoàn thành | 10 |
 | **Tổng cá nhân** | **60** |
+
+
+---
+
+## Module 5: Enrichment Pipeline
+
+**File:** `src/m5_enrichment.py` · **Test:** `pytest tests/test_m5.py`
+
+### Yêu cầu
+Làm giàu chunks trước khi embed — 4 techniques:
+
+| Technique | Hàm | Mô tả |
+|-----------|-----|-------|
+| Summarize | `summarize_chunk()` | LLM tóm tắt chunk → giảm noise |
+| HyQA | `generate_hypothesis_questions()` | Generate câu hỏi chunk có thể trả lời → bridge vocabulary gap |
+| Contextual Prepend | `contextual_prepend()` | Thêm context "chunk nằm ở đâu" (Anthropic style) |
+| Auto Metadata | `extract_metadata()` | LLM extract topic, entities, category |
+| Full pipeline | `enrich_chunks()` | Chạy tất cả techniques trên list chunks |
+
+### TODO trong code
+```python
+# TODO 1: summarize_chunk() — LLM tóm tắt 2-3 câu, hoặc extractive (lấy 2 câu đầu)
+# TODO 2: generate_hypothesis_questions() — LLM generate N câu hỏi chunk có thể trả lời
+# TODO 3: contextual_prepend() — LLM viết 1 câu context + prepend vào chunk
+# TODO 4: extract_metadata() — LLM extract JSON {topic, entities, category, language}
+# TODO 5: enrich_chunks() — chạy pipeline trên list chunks, trả về EnrichedChunk
+```
+
+### Test pass criteria
+- [ ] `summarize_chunk()` trả về string
+- [ ] `generate_hypothesis_questions()` trả về list câu hỏi
+- [ ] `contextual_prepend()` trả về string chứa original text
+- [ ] `extract_metadata()` trả về dict
+- [ ] `enrich_chunks()` trả về list `EnrichedChunk` với `original_text` preserved
+
+### Lưu ý
+- Cần `OPENAI_API_KEY` trong `.env` (hoặc dùng extractive fallback không cần API)
+- Enrichment = **one-time cost** khi indexing. Dùng `gpt-4o-mini` để tiết kiệm
+- ROI cao: cải thiện **mọi query** sau đó

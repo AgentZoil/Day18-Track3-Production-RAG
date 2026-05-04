@@ -20,11 +20,11 @@ def main():
 
     os.makedirs("reports", exist_ok=True)
 
-    # Step 1: Naive Baseline
-    print("\n📌 STEP 1: Running Naive Baseline...")
+    # Step 1: Basic Baseline
+    print("\n📌 STEP 1: Running Basic RAG Baseline...")
     print("-" * 40)
-    from naive_baseline import main as run_naive
-    run_naive()
+    from naive_baseline import main as run_baseline
+    run_baseline()
 
     # Step 2: Production Pipeline
     print("\n📌 STEP 2: Running Production Pipeline...")
@@ -50,7 +50,7 @@ def main():
         with open(prod_path, encoding="utf-8") as f:
             prod = json.load(f)
 
-        print(f"\n{'Metric':<25} {'Naive':>8} {'Production':>12} {'Δ':>8}")
+        print(f"\n{'Metric':<25} {'Basic':>8} {'Production':>12} {'Δ':>8}")
         print("-" * 55)
         for m in ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]:
             n = naive.get("aggregate", {}).get(m, 0)

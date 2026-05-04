@@ -8,6 +8,7 @@ from src.m1_chunking import load_documents, chunk_hierarchical
 from src.m2_search import HybridSearch
 from src.m3_rerank import CrossEncoderReranker
 from src.m4_eval import load_test_set, evaluate_ragas, failure_analysis, save_report
+from src.m5_enrichment import enrich_chunks
 from config import RERANK_TOP_K
 
 
@@ -27,23 +28,23 @@ def build_pipeline():
             all_chunks.append({"text": child.text, "metadata": {**child.metadata, "parent_id": child.parent_id}})
     print(f"  {len(all_chunks)} chunks from {len(docs)} documents")
 
-    # BONUS: Enrichment — contextual prepend
-    # TODO (bonus +3 điểm): Trước khi index, thêm context cho mỗi chunk
-    # from openai import OpenAI
-    # client = OpenAI()
-    # for chunk in all_chunks:
-    #     resp = client.chat.completions.create(model="gpt-4o-mini", messages=[
-    #         {"role": "user", "content": f"Tóm tắt ngắn chunk này nằm ở đâu trong document:\n{chunk['text']}"}
-    #     ])
-    #     chunk["text"] = resp.choices[0].message.content + "\n" + chunk["text"]
+    # Step 2: Enrichment (M5)
+    print("\n[2/4] Enriching chunks (M5)...")
+    enriched = enrich_chunks(all_chunks, methods=["contextual", "hyqa", "metadata"])
+    if enriched:
+        # Use enriched text for indexing
+        all_chunks = [{"text": e.enriched_text, "metadata": e.auto_metadata} for e in enriched]
+        print(f"  Enriched {len(enriched)} chunks")
+    else:
+        print("  ⚠️  M5 not implemented — using raw chunks (fallback)")
 
-    # Step 2: Index (M2)
-    print("\n[2/3] Indexing (BM25 + Dense)...")
+    # Step 3: Index (M2)
+    print("\n[3/4] Indexing (BM25 + Dense)...")
     search = HybridSearch()
     search.index(all_chunks)
 
-    # Step 3: Reranker (M3)
-    print("\n[3/3] Loading reranker...")
+    # Step 4: Reranker (M3)
+    print("\n[4/4] Loading reranker...")
     reranker = CrossEncoderReranker()
 
     return search, reranker
